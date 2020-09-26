@@ -1,19 +1,14 @@
 package dao
 
 import (
-	"database/sql"
 	"fmt"
 
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/kvaishak/twitter-server/model"
 )
 
 func GetUsers() (*[]model.User, error) {
 	fmt.Println("Go MySQL connectivity")
-	db, err := sql.Open("mysql", "root@tcp(127.0.0.1:3306)/twitterdb2")
-	if err != nil {
-		panic(err.Error())
-	}
+	db := DbConn()
 
 	results, err := db.Query("select UserId, UserName, UserEmail, FirstName, LastName from usertbl;")
 	if err != nil {
@@ -31,5 +26,6 @@ func GetUsers() (*[]model.User, error) {
 		usersArr = append(usersArr, user)
 	}
 
+	defer db.Close()
 	return &usersArr, nil
 }
