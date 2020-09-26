@@ -2,20 +2,21 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/kvaishak/twitter-server/services"
 )
 
 func GetUsers(response http.ResponseWriter, request *http.Request) {
-	fmt.Println("Haha Haha")
 
-	usersArr, err := services.GetUsers()
+	usersArr, apiErr := services.GetUsers()
 
-	if err != nil {
-		response.WriteHeader(http.StatusNotFound)
-		response.Write([]byte(err.Error()))
+	if apiErr != nil {
+
+		jsonValue, _ := json.Marshal(apiErr)
+		response.WriteHeader(apiErr.StatusCode)
+		response.Write([]byte(jsonValue))
+		return
 	}
 	json.NewEncoder(response).Encode(usersArr)
 }
