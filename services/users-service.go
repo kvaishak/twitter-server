@@ -14,3 +14,12 @@ func GetUsers() (*[]model.User, *errors.AppError) {
 
 	return usersArr, nil
 }
+
+func GetUserData(username string) (*model.User, *errors.AppError) {
+	userData, err := dao.GetUserData(username)
+	if err != nil {
+		return nil, err
+	}
+
+	return userData, nil
+}

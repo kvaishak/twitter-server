@@ -8,6 +8,7 @@ import (
 
 func main() {
 	http.HandleFunc("/users", controller.GetUsers)
+	http.HandleFunc("/user", controller.User)
 
 	if err := http.ListenAndServe(":8282", nil); err != nil {
 		panic(err)

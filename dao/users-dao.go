@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 
@@ -9,7 +10,7 @@ import (
 )
 
 func GetUsers() (*[]model.User, *errors.AppError) {
-	fmt.Println("Go MySQL connectivity")
+
 	db := DbConn()
 
 	results, err := db.Query("select UserId, UserName, UserEmail, FirstName, LastName from usertbl;")
@@ -31,9 +32,34 @@ func GetUsers() (*[]model.User, *errors.AppError) {
 	}
 
 	return nil, &errors.AppError{
-		Message:    fmt.Sprintf("Error in getting Users data from the database"),
+		Message:    "Error in getting Users data from the database",
 		StatusCode: http.StatusNotFound,
 		Status:     "not found",
 	}
 
+}
+
+func GetUserData(username string) (*model.User, *errors.AppError) {
+	db := DbConn()
+
+	userData := model.User{}
+	err := db.QueryRow("select UserId, UserName, UserEmail, FirstName, LastName from usertbl where UserName=?", username).Scan(&userData.UserID, &userData.UserName, &userData.Email, &userData.FirstName, &userData.LastName)
+	defer db.Close()
+
+	switch {
+	case err == sql.ErrNoRows:
+		return nil, &errors.AppError{
+			Message:    fmt.Sprintf("No user with username - %s in the Database", username),
+			StatusCode: http.StatusNotFound,
+			Status:     "not found",
+		}
+	case err != nil:
+		return nil, &errors.AppError{
+			Message:    fmt.Sprintf("Error in getting the user: %s's data", username),
+			StatusCode: http.StatusNotFound,
+			Status:     "not found",
+		}
+	default:
+		return &userData, nil
+	}
 }
