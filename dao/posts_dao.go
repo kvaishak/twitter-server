@@ -1,7 +1,6 @@
 package dao
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/kvaishak/twitter-server/errors"
@@ -42,9 +41,6 @@ func GetFollowersPost(username string) (*[]model.Post, *errors.AppError) {
 func GetFollowersTimedPost(username string, lastPublishTime string) (*[]model.Post, *errors.AppError) {
 
 	db := DbConn()
-
-	// lastTime, err := time.Parse("2006-01-02 15:04:04", lastPublishTime)
-	fmt.Println(lastPublishTime)
 	results, err := db.Query("SELECT TweetText, PubTime, UserName FROM tweetstbl INNER JOIN usertbl ON tweetstbl.TweetAuthorID=usertbl.UserId WHERE TweetAuthorID IN (SELECT FollowerId FROM followstbl WHERE UserId IN (SELECT UserId FROM usertbl WHERE UserName=?)) AND PubTime<? ORDER BY PubTime DESC LIMIT 0, 3;", username, lastPublishTime)
 
 	defer db.Close()
