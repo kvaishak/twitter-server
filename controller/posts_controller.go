@@ -2,6 +2,8 @@ package controller
 
 import (
 	"encoding/json"
+	"io/ioutil"
+	"log"
 	"net/http"
 
 	"github.com/kvaishak/twitter-server/errors"
@@ -39,6 +41,35 @@ func GetFollowersPost(response http.ResponseWriter, request *http.Request) {
 		}
 		json.NewEncoder(response).Encode(postsData)
 	}
+
+}
+
+func NewPost(response http.ResponseWriter, request *http.Request) {
+
+	(response).Header().Set("Access-Control-Allow-Origin", "*")
+
+	if request.Method == "POST" {
+		reqBody, err := ioutil.ReadAll(request.Body)
+		if err != nil {
+			log.Fatal(err)
+		}
+		isPosted, apiErr := services.NewPost(reqBody)
+
+		if apiErr != nil {
+			response = handleError(apiErr, response)
+			return
+		}
+
+		json.NewEncoder(response).Encode(isPosted)
+		return
+	}
+
+	apiError := &errors.AppError{
+		Message:    "Only POST request Authorized for this URL",
+		StatusCode: http.StatusNotFound,
+		Status:     "not found",
+	}
+	response = handleError(apiError, response)
 
 }
 

@@ -6,3 +6,8 @@ type Post struct {
 	PublishTime string `json:"time"`
 	UserName    string `json:"username"`
 }
+
+type NewPost struct {
+	TweetText string `json:"tweetText"`
+	UserName  string `json:"username"`
+}

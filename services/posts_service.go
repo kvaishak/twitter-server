@@ -1,6 +1,8 @@
 package services
 
 import (
+	"encoding/json"
+
 	"github.com/kvaishak/twitter-server/dao"
 	"github.com/kvaishak/twitter-server/errors"
 	"github.com/kvaishak/twitter-server/model"
@@ -22,4 +24,16 @@ func GetFollowersTimedPost(username string, lastPublishTime string) (*[]model.Po
 	}
 
 	return postsData, nil
+}
+
+func NewPost(reqBody []byte) (bool, *errors.AppError) {
+	var newPostData = model.NewPost{}
+	json.Unmarshal(reqBody, &newPostData)
+
+	isCreated, err := dao.NewPost(newPostData)
+	if err != nil {
+		return false, err
+	}
+
+	return isCreated, nil
 }

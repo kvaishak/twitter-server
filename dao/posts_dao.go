@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/kvaishak/twitter-server/errors"
@@ -64,6 +65,23 @@ func GetFollowersTimedPost(username string, lastPublishTime string) (*[]model.Po
 		Message:    "Error in getting Tweets data from the database",
 		StatusCode: http.StatusNotFound,
 		Status:     "not found",
+	}
+
+}
+
+func NewPost(newPostData model.NewPost) (bool, *errors.AppError) {
+	db := DbConn()
+
+	fmt.Println(newPostData.TweetText)
+	_, err := db.Exec("INSERT into tweetstbl (TweetText, TweetAuthorID) VALUES (?, (SELECT UserId FROM usertbl WHERE UserName=?));", newPostData.TweetText, newPostData.UserName)
+	if err != nil {
+		return false, &errors.AppError{
+			Message:    "Error in adding new Tweet",
+			StatusCode: http.StatusNotFound,
+			Status:     "not found",
+		}
+	} else {
+		return true, nil
 	}
 
 }
