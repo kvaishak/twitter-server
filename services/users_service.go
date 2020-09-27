@@ -1,6 +1,8 @@
 package services
 
 import (
+	"encoding/json"
+
 	"github.com/kvaishak/twitter-server/dao"
 	"github.com/kvaishak/twitter-server/errors"
 	"github.com/kvaishak/twitter-server/model"
@@ -22,4 +24,16 @@ func GetUserData(username string) (*model.User, *errors.AppError) {
 	}
 
 	return userData, nil
+}
+
+func CreateUser(reqBody []byte) (bool, *errors.AppError) {
+	var newUser = model.NewUser{}
+	json.Unmarshal(reqBody, &newUser)
+
+	isCreated, err := dao.CreateUser(newUser)
+	if err != nil {
+		return false, err
+	}
+
+	return isCreated, nil
 }

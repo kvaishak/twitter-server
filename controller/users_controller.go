@@ -2,8 +2,11 @@ package controller
 
 import (
 	"encoding/json"
+	"io/ioutil"
+	"log"
 	"net/http"
 
+	"github.com/kvaishak/twitter-server/errors"
 	"github.com/kvaishak/twitter-server/services"
 )
 
@@ -38,4 +41,37 @@ func User(response http.ResponseWriter, request *http.Request) {
 
 	(response).Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(response).Encode(userData)
+}
+
+func NewUser(response http.ResponseWriter, request *http.Request) {
+
+	(response).Header().Set("Access-Control-Allow-Origin", "*")
+
+	if request.Method == "POST" {
+		reqBody, err := ioutil.ReadAll(request.Body)
+		if err != nil {
+			log.Fatal(err)
+		}
+		isCreated, apiErr := services.CreateUser(reqBody)
+
+		if apiErr != nil {
+			jsonValue, _ := json.Marshal(apiErr)
+			response.WriteHeader(apiErr.StatusCode)
+			response.Write([]byte(jsonValue))
+			return
+		}
+
+		json.NewEncoder(response).Encode(isCreated)
+		return
+	}
+
+	apiError := errors.AppError{
+		Message:    "Only POST request Authorized for this URL",
+		StatusCode: http.StatusNotFound,
+		Status:     "not found",
+	}
+	jsonValue, _ := json.Marshal(apiError)
+	response.WriteHeader(apiError.StatusCode)
+	response.Write([]byte(jsonValue))
+
 }

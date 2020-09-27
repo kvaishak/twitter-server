@@ -63,3 +63,19 @@ func GetUserData(username string) (*model.User, *errors.AppError) {
 		return &userData, nil
 	}
 }
+
+func CreateUser(newUser model.NewUser) (bool, *errors.AppError) {
+	db := DbConn()
+
+	_, err := db.Exec("INSERT INTO usertbl (UserName, UserPassword, UserEmail, FirstName, LastName) VALUES (?, ?, ?, ?, ?)", newUser.Username, newUser.Username, newUser.Useremail, newUser.Firstname, newUser.Lastname)
+	if err != nil {
+		return false, &errors.AppError{
+			Message:    "Error in creating new User",
+			StatusCode: http.StatusNotFound,
+			Status:     "not found",
+		}
+	} else {
+		return true, nil
+	}
+
+}
