@@ -13,7 +13,7 @@ import (
 func GetFollowersPost(response http.ResponseWriter, request *http.Request) {
 
 	username := request.URL.Query().Get("username")
-	lastPublishTime := request.URL.Query().Get("time")
+	lastTweetId := request.URL.Query().Get("cursor")
 	(response).Header().Set("Access-Control-Allow-Origin", "*")
 
 	if len(username) == 0 {
@@ -26,8 +26,8 @@ func GetFollowersPost(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	if len(lastPublishTime) > 0 {
-		postsData, apiErr := services.GetFollowersTimedPost(username, lastPublishTime)
+	if len(lastTweetId) > 0 {
+		postsData, apiErr := services.GetFollowersTimedPost(username, lastTweetId)
 		if apiErr != nil {
 			response = handleError(apiErr, response)
 			return

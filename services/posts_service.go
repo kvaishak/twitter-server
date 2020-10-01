@@ -17,8 +17,8 @@ func GetFollowersPost(username string) (*[]model.Post, *errors.AppError) {
 	return postsData, nil
 }
 
-func GetFollowersTimedPost(username string, lastPublishTime string) (*[]model.Post, *errors.AppError) {
-	postsData, err := dao.GetFollowersTimedPost(username, lastPublishTime)
+func GetFollowersTimedPost(username string, lastTweetId string) (*[]model.Post, *errors.AppError) {
+	postsData, err := dao.GetFollowersTimedPost(username, lastTweetId)
 	if err != nil {
 		return nil, err
 	}
