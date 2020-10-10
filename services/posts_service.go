@@ -8,6 +8,15 @@ import (
 	"github.com/kvaishak/twitter-server/model"
 )
 
+func GetUsersPost(username string) (*[]model.Post, *errors.AppError) {
+	postsData, err := dao.GetUsersPost(username)
+	if err != nil {
+		return nil, err
+	}
+
+	return postsData, nil
+}
+
 func GetFollowersPost(username string) (*[]model.Post, *errors.AppError) {
 	postsData, err := dao.GetFollowersPost(username)
 	if err != nil {

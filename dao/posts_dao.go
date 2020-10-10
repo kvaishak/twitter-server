@@ -7,6 +7,37 @@ import (
 	"github.com/kvaishak/twitter-server/model"
 )
 
+func GetUsersPost(username string) (*[]model.Post, *errors.AppError) {
+
+	db := DbConn()
+
+	results, err := db.Query("SELECT TweetId, TweetText, PubTime, UserName, FirstName FROM tweetstbl INNER JOIN usertbl ON tweetstbl.TweetAuthorID=usertbl.UserId WHERE TweetAuthorID IN (SELECT UserId FROM usertbl WHERE UserName=?) ORDER BY TweetId DESC;", username)
+
+	defer db.Close()
+
+	if results != nil {
+		//Getting all Users Post data
+		postsArr := []model.Post{}
+		for results.Next() {
+			var post model.Post
+			err = results.Scan(&post.TweetID, &post.TweetText, &post.PublishTime, &post.UserName, &post.FirstName)
+			if err != nil {
+				panic(err.Error())
+			}
+			postsArr = append(postsArr, post)
+		}
+
+		return &postsArr, nil
+	}
+
+	return nil, &errors.AppError{
+		Message:    "Error in getting Tweets data from the database",
+		StatusCode: http.StatusNotFound,
+		Status:     "not found",
+	}
+
+}
+
 func GetFollowersPost(username string) (*[]model.Post, *errors.AppError) {
 
 	db := DbConn()

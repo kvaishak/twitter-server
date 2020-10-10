@@ -10,6 +10,30 @@ import (
 	"github.com/kvaishak/twitter-server/services"
 )
 
+func GetUserTweets(response http.ResponseWriter, request *http.Request) {
+
+	username := request.URL.Query().Get("username")
+	(response).Header().Set("Access-Control-Allow-Origin", "*")
+
+	if len(username) == 0 {
+		apiError := &errors.AppError{
+			Message:    "Please send a username to fetch the posts",
+			StatusCode: http.StatusNotFound,
+			Status:     "not found",
+		}
+		response = handleError(apiError, response)
+		return
+	}
+
+	postsData, apiErr := services.GetUsersPost(username)
+	if apiErr != nil {
+		response = handleError(apiErr, response)
+		return
+	}
+	json.NewEncoder(response).Encode(postsData)
+
+}
+
 func GetFollowersPost(response http.ResponseWriter, request *http.Request) {
 
 	username := request.URL.Query().Get("username")

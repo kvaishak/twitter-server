@@ -11,6 +11,7 @@ func main() {
 	http.HandleFunc("/user", controller.User)
 	http.HandleFunc("/user/new", controller.NewUser)
 
+	http.HandleFunc("/user/tweets", controller.GetUserTweets)
 	http.HandleFunc("/tweets", controller.GetFollowersPost)
 	http.HandleFunc("/tweets/new", controller.NewPost)
 
