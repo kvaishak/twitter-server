@@ -34,6 +34,19 @@ func GetUserTweets(response http.ResponseWriter, request *http.Request) {
 
 }
 
+func GetAllPost(response http.ResponseWriter, request *http.Request) {
+
+	(response).Header().Set("Access-Control-Allow-Origin", "*")
+
+	postsData, apiErr := services.GetAllUsersPost()
+	if apiErr != nil {
+		response = handleError(apiErr, response)
+		return
+	}
+	json.NewEncoder(response).Encode(postsData)
+
+}
+
 func GetFollowersPost(response http.ResponseWriter, request *http.Request) {
 
 	username := request.URL.Query().Get("username")

@@ -15,6 +15,8 @@ func main() {
 	http.HandleFunc("/tweets", controller.GetFollowersPost)
 	http.HandleFunc("/tweets/new", controller.NewPost)
 
+	http.HandleFunc("/alltweets", controller.GetAllPost)
+
 	if err := http.ListenAndServe(":8282", nil); err != nil {
 		panic(err)
 	}

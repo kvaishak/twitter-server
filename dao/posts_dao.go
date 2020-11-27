@@ -38,6 +38,37 @@ func GetUsersPost(username string) (*[]model.Post, *errors.AppError) {
 
 }
 
+func GetAllUsersPost() (*[]model.Post, *errors.AppError) {
+
+	db := DbConn()
+
+	results, err := db.Query("SELECT TweetId, TweetText, PubTime, UserName, FirstName FROM tweetstbl INNER JOIN usertbl ON tweetstbl.TweetAuthorID=usertbl.UserId ORDER BY TweetId DESC;")
+
+	defer db.Close()
+
+	if results != nil {
+		//Getting all Users Post data
+		postsArr := []model.Post{}
+		for results.Next() {
+			var post model.Post
+			err = results.Scan(&post.TweetID, &post.TweetText, &post.PublishTime, &post.UserName, &post.FirstName)
+			if err != nil {
+				panic(err.Error())
+			}
+			postsArr = append(postsArr, post)
+		}
+
+		return &postsArr, nil
+	}
+
+	return nil, &errors.AppError{
+		Message:    "Error in getting All Tweets data from the database",
+		StatusCode: http.StatusNotFound,
+		Status:     "not found",
+	}
+
+}
+
 func GetFollowersPost(username string) (*[]model.Post, *errors.AppError) {
 
 	db := DbConn()
