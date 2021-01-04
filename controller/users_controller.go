@@ -45,7 +45,11 @@ func User(response http.ResponseWriter, request *http.Request) {
 
 func NewUser(response http.ResponseWriter, request *http.Request) {
 
+	// Setting Cors and preflight to responses
 	(response).Header().Set("Access-Control-Allow-Origin", "*")
+	(response).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	(response).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+	(response).Header().Set("Content-Type", "text/html; charset=ascii")
 
 	if request.Method == "POST" {
 		reqBody, err := ioutil.ReadAll(request.Body)

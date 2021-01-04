@@ -9,8 +9,6 @@ type User struct {
 }
 
 type NewUser struct {
-	Username  string
-	Useremail string
-	Firstname string
-	Lastname  string
+	UserId   string
+	Username string
 }

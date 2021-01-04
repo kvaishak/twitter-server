@@ -67,7 +67,8 @@ func GetUserData(username string) (*model.User, *errors.AppError) {
 func CreateUser(newUser model.NewUser) (bool, *errors.AppError) {
 	db := DbConn()
 
-	_, err := db.Exec("INSERT INTO usertbl (UserName, UserPassword, UserEmail, FirstName, LastName) VALUES (?, ?, ?, ?, ?)", newUser.Username, newUser.Username, newUser.Useremail, newUser.Firstname, newUser.Lastname)
+	fmt.Println(newUser)
+	_, err := db.Exec("INSERT INTO usertbl (UserId, UserName, UserPassword, UserEmail, FirstName, LastName) VALUES (?, ?, 'defaultPassword', 'defaultMail', 'defaultFirst', 'defaultLast')", newUser.UserId, newUser.Username)
 	if err != nil {
 		return false, &errors.AppError{
 			Message:    "Error in creating new User",
