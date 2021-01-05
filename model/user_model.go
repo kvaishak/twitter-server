@@ -1,14 +1,11 @@
 package model
 
 type User struct {
-	UserID    int64  `json:"userid"`
-	UserName  string `json:"username"`
-	Email     string `json:"useremail"`
-	FirstName string `json:"firstname"`
-	LastName  string `json:"lastname"`
+	UserId   string `json:"userId"`
+	UserName string `json:"userName"`
 }
 
 type NewUser struct {
 	UserId   string
-	Username string
+	UserName string
 }

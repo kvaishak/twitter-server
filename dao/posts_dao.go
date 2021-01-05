@@ -11,7 +11,7 @@ func GetUsersPost(username string) (*[]model.Post, *errors.AppError) {
 
 	db := DbConn()
 
-	results, err := db.Query("SELECT TweetId, TweetText, PubTime, UserName, FirstName FROM tweetstbl INNER JOIN usertbl ON tweetstbl.TweetAuthorID=usertbl.UserId WHERE TweetAuthorID IN (SELECT UserId FROM usertbl WHERE UserName=?) ORDER BY TweetId DESC;", username)
+	results, err := db.Query("SELECT tweetId, tweetText, pubTime, userName FROM tweetstbl INNER JOIN usertbl ON tweetstbl.tweetAuthorId=usertbl.userId WHERE tweetAuthorId IN (SELECT userId FROM usertbl WHERE userName=?) ORDER BY TweetId DESC;", username)
 
 	defer db.Close()
 
@@ -20,7 +20,7 @@ func GetUsersPost(username string) (*[]model.Post, *errors.AppError) {
 		postsArr := []model.Post{}
 		for results.Next() {
 			var post model.Post
-			err = results.Scan(&post.TweetID, &post.TweetText, &post.PublishTime, &post.UserName, &post.FirstName)
+			err = results.Scan(&post.TweetID, &post.TweetText, &post.PublishTime, &post.UserName)
 			if err != nil {
 				panic(err.Error())
 			}
@@ -42,7 +42,7 @@ func GetAllUsersPost() (*[]model.Post, *errors.AppError) {
 
 	db := DbConn()
 
-	results, err := db.Query("SELECT TweetId, TweetText, PubTime, UserName, FirstName FROM tweetstbl INNER JOIN usertbl ON tweetstbl.TweetAuthorID=usertbl.UserId ORDER BY TweetId DESC;")
+	results, err := db.Query("SELECT tweetId, tweetText, pubTime, userName FROM tweetstbl INNER JOIN usertbl ON tweetstbl.tweetAuthorId=usertbl.userId ORDER BY tweetId DESC;")
 
 	defer db.Close()
 
@@ -51,7 +51,7 @@ func GetAllUsersPost() (*[]model.Post, *errors.AppError) {
 		postsArr := []model.Post{}
 		for results.Next() {
 			var post model.Post
-			err = results.Scan(&post.TweetID, &post.TweetText, &post.PublishTime, &post.UserName, &post.FirstName)
+			err = results.Scan(&post.TweetID, &post.TweetText, &post.PublishTime, &post.UserName)
 			if err != nil {
 				panic(err.Error())
 			}
@@ -73,7 +73,7 @@ func GetFollowersPost(username string) (*[]model.Post, *errors.AppError) {
 
 	db := DbConn()
 
-	results, err := db.Query("SELECT TweetId, TweetText, PubTime, UserName, FirstName FROM tweetstbl INNER JOIN usertbl ON tweetstbl.TweetAuthorID=usertbl.UserId WHERE TweetAuthorID IN (SELECT FollowerId FROM followstbl WHERE UserId IN (SELECT UserId FROM usertbl WHERE UserName=?)) ORDER BY TweetId DESC LIMIT 3;", username)
+	results, err := db.Query("SELECT tweetId, tweetText, pubTime, userName FROM tweetstbl INNER JOIN usertbl ON tweetstbl.tweetAuthorId=usertbl.userId WHERE tweetAuthorId IN (SELECT followerId FROM followstbl WHERE userId IN (SELECT userId FROM usertbl WHERE userName=?)) ORDER BY tweetId DESC LIMIT 3;", username)
 
 	defer db.Close()
 
@@ -82,7 +82,7 @@ func GetFollowersPost(username string) (*[]model.Post, *errors.AppError) {
 		postsArr := []model.Post{}
 		for results.Next() {
 			var post model.Post
-			err = results.Scan(&post.TweetID, &post.TweetText, &post.PublishTime, &post.UserName, &post.FirstName)
+			err = results.Scan(&post.TweetID, &post.TweetText, &post.PublishTime, &post.UserName)
 			if err != nil {
 				panic(err.Error())
 			}
@@ -103,7 +103,7 @@ func GetFollowersPost(username string) (*[]model.Post, *errors.AppError) {
 func GetFollowersTimedPost(username string, lastTweetId string) (*[]model.Post, *errors.AppError) {
 
 	db := DbConn()
-	results, err := db.Query("SELECT TweetId, TweetText, PubTime, UserName, FirstName FROM tweetstbl INNER JOIN usertbl ON tweetstbl.TweetAuthorID=usertbl.UserId WHERE TweetAuthorID IN (SELECT FollowerId FROM followstbl WHERE UserId IN (SELECT UserId FROM usertbl WHERE UserName=?)) AND TweetId<? ORDER BY TweetId DESC LIMIT 3;", username, lastTweetId)
+	results, err := db.Query("SELECT tweetId, tweetText, pubTime, userName FROM tweetstbl INNER JOIN usertbl ON tweetstbl.tweetAuthorId=usertbl.userId WHERE tweetAuthorId IN (SELECT followerId FROM followstbl WHERE userId IN (SELECT userId FROM usertbl WHERE userName=?)) AND tweetId<? ORDER BY tweetId DESC LIMIT 3;", username, lastTweetId)
 
 	defer db.Close()
 
@@ -112,7 +112,7 @@ func GetFollowersTimedPost(username string, lastTweetId string) (*[]model.Post, 
 		postsArr := []model.Post{}
 		for results.Next() {
 			var post model.Post
-			err = results.Scan(&post.TweetID, &post.TweetText, &post.PublishTime, &post.UserName, &post.FirstName)
+			err = results.Scan(&post.TweetID, &post.TweetText, &post.PublishTime, &post.UserName)
 			if err != nil {
 				panic(err.Error())
 			}
@@ -133,7 +133,7 @@ func GetFollowersTimedPost(username string, lastTweetId string) (*[]model.Post, 
 func NewPost(newPostData model.NewPost) (bool, *errors.AppError) {
 	db := DbConn()
 
-	_, err := db.Exec("INSERT into tweetstbl (TweetText, TweetAuthorID) VALUES (?, (SELECT UserId FROM usertbl WHERE UserName=?));", newPostData.TweetText, newPostData.UserName)
+	_, err := db.Exec("INSERT into tweetstbl (tweetText, tweetAuthorId) VALUES (?, (SELECT userId FROM usertbl WHERE userName=?));", newPostData.TweetText, newPostData.UserName)
 	if err != nil {
 		return false, &errors.AppError{
 			Message:    "Error in adding new Tweet",

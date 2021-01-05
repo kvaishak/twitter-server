@@ -8,7 +8,7 @@ import (
 
 func DbConn() (db *sql.DB) {
 
-	db, err := sql.Open("mysql", "root@tcp(127.0.0.1:3306)/twitterdb2")
+	db, err := sql.Open("mysql", "root@tcp(127.0.0.1:3306)/twitter")
 	if err != nil {
 		panic(err.Error())
 	}

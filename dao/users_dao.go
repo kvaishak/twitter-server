@@ -13,7 +13,7 @@ func GetUsers() (*[]model.User, *errors.AppError) {
 
 	db := DbConn()
 
-	results, err := db.Query("select UserId, UserName, UserEmail, FirstName, LastName from usertbl;")
+	results, err := db.Query("select userId, userName from usertbl;")
 	defer db.Close()
 
 	if results != nil {
@@ -21,7 +21,7 @@ func GetUsers() (*[]model.User, *errors.AppError) {
 		usersArr := []model.User{}
 		for results.Next() {
 			var user model.User
-			err = results.Scan(&user.UserID, &user.UserName, &user.Email, &user.FirstName, &user.LastName)
+			err = results.Scan(&user.UserId, &user.UserName)
 			if err != nil {
 				panic(err.Error())
 			}
@@ -43,7 +43,7 @@ func GetUserData(username string) (*model.User, *errors.AppError) {
 	db := DbConn()
 
 	userData := model.User{}
-	err := db.QueryRow("select UserId, UserName, UserEmail, FirstName, LastName from usertbl where UserName=?", username).Scan(&userData.UserID, &userData.UserName, &userData.Email, &userData.FirstName, &userData.LastName)
+	err := db.QueryRow("select userId, userName from usertbl where userName=?", username).Scan(&userData.UserId, &userData.UserName)
 	defer db.Close()
 
 	switch {
@@ -67,8 +67,7 @@ func GetUserData(username string) (*model.User, *errors.AppError) {
 func CreateUser(newUser model.NewUser) (bool, *errors.AppError) {
 	db := DbConn()
 
-	fmt.Println(newUser)
-	_, err := db.Exec("INSERT INTO usertbl (UserId, UserName, UserPassword, UserEmail, FirstName, LastName) VALUES (?, ?, 'defaultPassword', 'defaultMail', 'defaultFirst', 'defaultLast')", newUser.UserId, newUser.Username)
+	_, err := db.Exec("INSERT INTO usertbl (userId, userName) VALUES (?, ?)", newUser.UserId, newUser.UserName)
 	if err != nil {
 		return false, &errors.AppError{
 			Message:    "Error in creating new User",
