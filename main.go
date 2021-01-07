@@ -55,8 +55,7 @@ func isAuthorized(endpoint func(http.ResponseWriter, *http.Request, string)) htt
 				fmt.Fprintf(w, err.Error())
 			}
 
-			fmt.Println(parsedToken.Valid)
-
+			fmt.Println(parsedToken)
 			uid := fmt.Sprintf("%v", claims["uid"])
 
 			// for key, val := range claims {
