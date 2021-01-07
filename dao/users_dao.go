@@ -64,6 +64,24 @@ func GetUserData(username string) (*model.User, *errors.AppError) {
 	}
 }
 
+func FollowUser(uid string, followerName string) (bool, *errors.AppError) {
+	db := DbConn()
+
+	_, err := db.Exec("insert into followstbl (userId, followerId) values (?, (select userId from usertbl where userName=?))", uid, followerName)
+	// defer db.Close()
+
+	if err != nil {
+		return false, &errors.AppError{
+			Message:    fmt.Sprintf("Error in following the user: %s's data", followerName),
+			StatusCode: http.StatusNotFound,
+			Status:     "not found",
+		}
+	} else {
+		return true, nil
+	}
+
+}
+
 func CreateUser(newUser model.NewUser) (bool, *errors.AppError) {
 	db := DbConn()
 

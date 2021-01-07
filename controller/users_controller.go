@@ -43,6 +43,40 @@ func User(response http.ResponseWriter, request *http.Request) {
 	json.NewEncoder(response).Encode(userData)
 }
 
+func UserAuth(response http.ResponseWriter, request *http.Request) {
+
+	uid := request.URL.Query().Get("uid")
+
+	userJWT, apiErr := services.GetUserJWT(uid)
+
+	if apiErr != nil {
+
+		jsonValue, _ := json.Marshal(apiErr)
+		response.Write([]byte(jsonValue))
+		return
+	}
+
+	(response).Header().Set("Access-Control-Allow-Origin", "*")
+	json.NewEncoder(response).Encode(userJWT)
+}
+
+func FollowUser(response http.ResponseWriter, request *http.Request, uid string) {
+
+	followerName := request.URL.Query().Get("followerName")
+
+	isFollowed, apiErr := services.FollowUser(uid, followerName)
+
+	if apiErr != nil {
+
+		jsonValue, _ := json.Marshal(apiErr)
+		response.Write([]byte(jsonValue))
+		return
+	}
+
+	(response).Header().Set("Access-Control-Allow-Origin", "*")
+	json.NewEncoder(response).Encode(isFollowed)
+}
+
 func NewUser(response http.ResponseWriter, request *http.Request) {
 
 	// Setting Cors and preflight to responses

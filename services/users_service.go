@@ -2,11 +2,15 @@ package services
 
 import (
 	"encoding/json"
+	"fmt"
 
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/kvaishak/twitter-server/dao"
 	"github.com/kvaishak/twitter-server/errors"
 	"github.com/kvaishak/twitter-server/model"
 )
+
+var mySigningKey = []byte("mysupersecretsigningkey")
 
 func GetUsers() (*[]model.User, *errors.AppError) {
 	usersArr, err := dao.GetUsers()
@@ -26,6 +30,15 @@ func GetUserData(username string) (*model.User, *errors.AppError) {
 	return userData, nil
 }
 
+func FollowUser(uid string, followeName string) (bool, *errors.AppError) {
+	isFollowed, err := dao.FollowUser(uid, followeName)
+	if err != nil {
+		return false, err
+	}
+
+	return isFollowed, nil
+}
+
 func CreateUser(reqBody []byte) (bool, *errors.AppError) {
 	var newUser = model.NewUser{}
 	json.Unmarshal(reqBody, &newUser)
@@ -36,4 +49,33 @@ func CreateUser(reqBody []byte) (bool, *errors.AppError) {
 	}
 
 	return isCreated, nil
+}
+
+func GenerateJWT(uid string) (string, error) {
+	token := jwt.New(jwt.SigningMethodHS256)
+
+	claims := make(jwt.MapClaims)
+
+	claims["uid"] = uid
+	token.Claims = claims
+
+	tokenStr, err := token.SignedString(mySigningKey)
+
+	if err != nil {
+		fmt.Errorf("Error in generation JWT : %s", err)
+		return "", err
+	}
+	return tokenStr, nil
+}
+
+func GetUserJWT(uid string) (string, error) {
+	tokenString, err := GenerateJWT(uid)
+
+	if err != nil {
+		fmt.Errorf("Error in generation JWT in the main funciton : %s", err.Error())
+		return "", err
+	}
+
+	fmt.Println(tokenString)
+	return tokenString, nil
 }
