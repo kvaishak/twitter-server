@@ -73,7 +73,6 @@ func FollowUser(response http.ResponseWriter, request *http.Request, uid string)
 		return
 	}
 
-	(response).Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(response).Encode(isFollowed)
 }
 
