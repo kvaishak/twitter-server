@@ -29,10 +29,6 @@ func main() {
 	}
 }
 
-func mockTesting(w http.ResponseWriter, r *http.Request, uid string) {
-	fmt.Fprintln(w, "Super Secret Information ", uid)
-}
-
 func isAuthorized(endpoint func(http.ResponseWriter, *http.Request, string)) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
