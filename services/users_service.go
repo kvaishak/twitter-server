@@ -39,6 +39,15 @@ func FollowUser(uid string, followeName string) (bool, *errors.AppError) {
 	return isFollowed, nil
 }
 
+func IsFollowing(uid string, followeName string) (bool, *errors.AppError) {
+	isFollowed, err := dao.IsFollowing(uid, followeName)
+	if err != nil {
+		return false, err
+	}
+
+	return isFollowed, nil
+}
+
 func CreateUser(reqBody []byte) (bool, *errors.AppError) {
 	var newUser = model.NewUser{}
 	json.Unmarshal(reqBody, &newUser)

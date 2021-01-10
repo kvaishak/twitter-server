@@ -76,6 +76,22 @@ func FollowUser(response http.ResponseWriter, request *http.Request, uid string)
 	json.NewEncoder(response).Encode(isFollowed)
 }
 
+func CheckIfFollowing(response http.ResponseWriter, request *http.Request, uid string) {
+
+	followerName := request.URL.Query().Get("followerName")
+
+	isFollowed, apiErr := services.IsFollowing(uid, followerName)
+
+	if apiErr != nil {
+
+		jsonValue, _ := json.Marshal(apiErr)
+		response.Write([]byte(jsonValue))
+		return
+	}
+
+	json.NewEncoder(response).Encode(isFollowed)
+}
+
 func NewUser(response http.ResponseWriter, request *http.Request) {
 
 	// Setting Cors and preflight to responses

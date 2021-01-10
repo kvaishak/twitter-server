@@ -82,6 +82,28 @@ func FollowUser(uid string, followerName string) (bool, *errors.AppError) {
 
 }
 
+func IsFollowing(uid string, followerName string) (bool, *errors.AppError) {
+	db := DbConn()
+
+	var followerId int
+	err := db.QueryRow("select followId from followstbl where userId=? AND followerId=(select userId from usertbl where userName=?);", uid, followerName).Scan(&followerId)
+	defer db.Close()
+
+	switch {
+	case err == sql.ErrNoRows:
+		return false, nil
+	case err != nil:
+		return false, &errors.AppError{
+			Message:    fmt.Sprintf("Error in getting the user: %s's follower data", followerName),
+			StatusCode: http.StatusNotFound,
+			Status:     "not found",
+		}
+	default:
+		return true, nil
+	}
+
+}
+
 func CreateUser(newUser model.NewUser) (bool, *errors.AppError) {
 	db := DbConn()
 

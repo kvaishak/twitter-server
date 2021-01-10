@@ -23,6 +23,7 @@ func main() {
 	http.HandleFunc("/alltweets", controller.GetAllPost)
 
 	http.Handle("/user/follow", isAuthorized(controller.FollowUser))
+	http.Handle("/user/following", isAuthorized(controller.CheckIfFollowing))
 
 	if err := http.ListenAndServe(":8282", nil); err != nil {
 		panic(err)
