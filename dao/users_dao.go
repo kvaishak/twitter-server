@@ -79,7 +79,23 @@ func FollowUser(uid string, followerName string) (bool, *errors.AppError) {
 	} else {
 		return true, nil
 	}
+}
 
+func UnFollowUser(uid string, followerName string) (bool, *errors.AppError) {
+	db := DbConn()
+
+	_, err := db.Exec("delete from followstbl where userId=? AND followerId=(select userId from usertbl where userName=?)", uid, followerName)
+	// defer db.Close()
+
+	if err != nil {
+		return false, &errors.AppError{
+			Message:    fmt.Sprintf("Error in unfollowing the user: %s's data", followerName),
+			StatusCode: http.StatusNotFound,
+			Status:     "not found",
+		}
+	} else {
+		return true, nil
+	}
 }
 
 func IsFollowing(uid string, followerName string) (bool, *errors.AppError) {

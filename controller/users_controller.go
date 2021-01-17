@@ -76,6 +76,22 @@ func FollowUser(response http.ResponseWriter, request *http.Request, uid string)
 	json.NewEncoder(response).Encode(isFollowed)
 }
 
+func UnFollowUser(response http.ResponseWriter, request *http.Request, uid string) {
+
+	followerName := request.URL.Query().Get("followerName")
+
+	isFollowed, apiErr := services.UnFollowUser(uid, followerName)
+
+	if apiErr != nil {
+
+		jsonValue, _ := json.Marshal(apiErr)
+		response.Write([]byte(jsonValue))
+		return
+	}
+
+	json.NewEncoder(response).Encode(isFollowed)
+}
+
 func CheckIfFollowing(response http.ResponseWriter, request *http.Request, uid string) {
 
 	followerName := request.URL.Query().Get("followerName")
