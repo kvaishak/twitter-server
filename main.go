@@ -17,7 +17,6 @@ func main() {
 	http.HandleFunc("/user/new", controller.NewUser)
 
 	http.HandleFunc("/user/tweets", controller.GetUserTweets)
-	http.HandleFunc("/tweets", controller.GetFollowersPost)
 	http.HandleFunc("/tweets/new", controller.NewPost)
 
 	http.HandleFunc("/alltweets", controller.GetAllPost)
@@ -25,6 +24,7 @@ func main() {
 	http.Handle("/user/follow", isAuthorized(controller.FollowUser))
 	http.Handle("/user/unfollow", isAuthorized(controller.UnFollowUser))
 	http.Handle("/user/following", isAuthorized(controller.CheckIfFollowing))
+	http.Handle("/tweets", isAuthorized(controller.GetFollowersPost))
 
 	if err := http.ListenAndServe(":8282", nil); err != nil {
 		panic(err)

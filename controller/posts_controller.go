@@ -47,31 +47,31 @@ func GetAllPost(response http.ResponseWriter, request *http.Request) {
 
 }
 
-func GetFollowersPost(response http.ResponseWriter, request *http.Request) {
+func GetFollowersPost(response http.ResponseWriter, request *http.Request, uid string) {
 
-	username := request.URL.Query().Get("username")
+	// username := request.URL.Query().Get("username")
 	lastTweetId := request.URL.Query().Get("cursor")
 	(response).Header().Set("Access-Control-Allow-Origin", "*")
 
-	if len(username) == 0 {
-		apiError := &errors.AppError{
-			Message:    "Please send a username to fetch the posts",
-			StatusCode: http.StatusNotFound,
-			Status:     "not found",
-		}
-		response = handleError(apiError, response)
-		return
-	}
+	// if len(username) == 0 {
+	// 	apiError := &errors.AppError{
+	// 		Message:    "Please send a username to fetch the posts",
+	// 		StatusCode: http.StatusNotFound,
+	// 		Status:     "not found",
+	// 	}
+	// 	response = handleError(apiError, response)
+	// 	return
+	// }
 
 	if len(lastTweetId) > 0 {
-		postsData, apiErr := services.GetFollowersTimedPost(username, lastTweetId)
+		postsData, apiErr := services.GetFollowersTimedPost(uid, lastTweetId)
 		if apiErr != nil {
 			response = handleError(apiErr, response)
 			return
 		}
 		json.NewEncoder(response).Encode(postsData)
 	} else {
-		postsData, apiErr := services.GetFollowersPost(username)
+		postsData, apiErr := services.GetFollowersPost(uid)
 		if apiErr != nil {
 			response = handleError(apiErr, response)
 			return

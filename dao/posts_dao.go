@@ -69,11 +69,11 @@ func GetAllUsersPost() (*[]model.Post, *errors.AppError) {
 
 }
 
-func GetFollowersPost(username string) (*[]model.Post, *errors.AppError) {
+func GetFollowersPost(uid string) (*[]model.Post, *errors.AppError) {
 
 	db := DbConn()
 
-	results, err := db.Query("SELECT tweetId, tweetText, pubTime, userName FROM tweetstbl INNER JOIN usertbl ON tweetstbl.tweetAuthorId=usertbl.userId WHERE tweetAuthorId IN (SELECT followerId FROM followstbl WHERE userId IN (SELECT userId FROM usertbl WHERE userName=?)) ORDER BY tweetId DESC LIMIT 3;", username)
+	results, err := db.Query("SELECT tweetId, tweetText, pubTime, userName FROM tweetstbl INNER JOIN usertbl ON tweetstbl.tweetAuthorId=usertbl.userId WHERE tweetAuthorId IN (SELECT followerId FROM followstbl WHERE userId=?) ORDER BY tweetId DESC LIMIT 3;", uid)
 
 	defer db.Close()
 
@@ -100,10 +100,10 @@ func GetFollowersPost(username string) (*[]model.Post, *errors.AppError) {
 
 }
 
-func GetFollowersTimedPost(username string, lastTweetId string) (*[]model.Post, *errors.AppError) {
+func GetFollowersTimedPost(uid string, lastTweetId string) (*[]model.Post, *errors.AppError) {
 
 	db := DbConn()
-	results, err := db.Query("SELECT tweetId, tweetText, pubTime, userName FROM tweetstbl INNER JOIN usertbl ON tweetstbl.tweetAuthorId=usertbl.userId WHERE tweetAuthorId IN (SELECT followerId FROM followstbl WHERE userId IN (SELECT userId FROM usertbl WHERE userName=?)) AND tweetId<? ORDER BY tweetId DESC LIMIT 3;", username, lastTweetId)
+	results, err := db.Query("SELECT tweetId, tweetText, pubTime, userName FROM tweetstbl INNER JOIN usertbl ON tweetstbl.tweetAuthorId=usertbl.userId WHERE tweetAuthorId IN (SELECT followerId FROM followstbl WHERE userId=?) AND tweetId<? ORDER BY tweetId DESC LIMIT 3;", uid, lastTweetId)
 
 	defer db.Close()
 

@@ -26,8 +26,8 @@ func GetAllUsersPost() (*[]model.Post, *errors.AppError) {
 	return postsData, nil
 }
 
-func GetFollowersPost(username string) (*[]model.Post, *errors.AppError) {
-	postsData, err := dao.GetFollowersPost(username)
+func GetFollowersPost(uid string) (*[]model.Post, *errors.AppError) {
+	postsData, err := dao.GetFollowersPost(uid)
 	if err != nil {
 		return nil, err
 	}
@@ -35,8 +35,8 @@ func GetFollowersPost(username string) (*[]model.Post, *errors.AppError) {
 	return postsData, nil
 }
 
-func GetFollowersTimedPost(username string, lastTweetId string) (*[]model.Post, *errors.AppError) {
-	postsData, err := dao.GetFollowersTimedPost(username, lastTweetId)
+func GetFollowersTimedPost(uid string, lastTweetId string) (*[]model.Post, *errors.AppError) {
+	postsData, err := dao.GetFollowersTimedPost(uid, lastTweetId)
 	if err != nil {
 		return nil, err
 	}
